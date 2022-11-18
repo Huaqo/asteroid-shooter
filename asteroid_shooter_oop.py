@@ -1,19 +1,13 @@
-import pygame, sys
+import pygame
+import sys
+# from random import randint, uniform
 
 
 class Ship(pygame.sprite.Sprite):
     def __init__(self, groups):
-
-        # 1. we have to init the parent class
         super().__init__(groups)
-
-        # 2. We need a surface -> image
         self.image = pygame.image.load('ship.png').convert_alpha()
-
-        # 3. We need a rect
         self.rect = self.image.get_rect(center=(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-
-        # timer
         self.can_shoot = True
         self.shoot_time = None
 
@@ -30,14 +24,11 @@ class Ship(pygame.sprite.Sprite):
     def laser_shoot(self):
         if pygame.mouse.get_pressed()[0] and self.can_shoot:
             self.can_shoot = False
-            self.shoot_time = pygame.time.get_ticks()
-            Laser(self.rect.midtop, laser_group)
 
     def update(self):
         self.laser_timer()
         self.laser_shoot()
         self.input_position()
-
 
 class Laser(pygame.sprite.Sprite):
     def __init__(self, pos, groups):
@@ -45,36 +36,27 @@ class Laser(pygame.sprite.Sprite):
         self.image = pygame.image.load('laser.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=pos)
 
-        # float based position
-        self.pos = pygame.math.Vector2(self.rect.topleft)
-        self.direction = pygame.math.Vector2(0, -1)
-        self.speed = 600
-
-    def update(self):
-        self.pos += self.direction * self.speed * dt
-        self.rect.topleft = (round(self.pos.x), round(self.pos.y))
-
 
 # basic setup
 pygame.init()
 WINDOW_WIDTH, WINDOW_HEIGHT = 1280, 720
 display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption('Space shooter')
+pygame.display.set_caption("Asteroid Shooter")
 clock = pygame.time.Clock()
 
 # background
-background_surf = pygame.image.load('background.png').convert()
+background_surf = pygame.image.load("background.png").convert_alpha()
 
 # sprite groups
-spaceship_group = pygame.sprite.GroupSingle()
+spaceship_group = pygame.sprite.Group()
 laser_group = pygame.sprite.Group()
 
 # sprite creation
 ship = Ship(spaceship_group)
+laser = Laser((100, 300), laser_group)
 
 # game loop
 while True:
-
     # event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -87,13 +69,12 @@ while True:
     # background
     display_surface.blit(background_surf, (0, 0))
 
-    # update
+    # updates
     spaceship_group.update()
-    laser_group.update()
 
     # graphics
     spaceship_group.draw(display_surface)
     laser_group.draw(display_surface)
 
-    # draw the frame
+    # draw frame
     pygame.display.update()

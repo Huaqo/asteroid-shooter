@@ -31,7 +31,7 @@ class Ship(pygame.sprite.Sprite):
             self.can_shoot = False
             self.shoot_time = pygame.time.get_ticks()
             Laser(self.rect.midtop, laser_group)
-            self.laser_sound.play()
+            self.laser_sound.play().set_volume(0.1)
 
     def meteor_collision(self):
         if pygame.sprite.spritecollide(self, meteor_group, False, pygame.sprite.collide_mask):
@@ -61,7 +61,7 @@ class Laser(pygame.sprite.Sprite):
     def meteor_collision(self):
         if pygame.sprite.spritecollide(self, meteor_group, True, pygame.sprite.collide_mask):
             self.kill()
-            self.explosio_sound.play()
+            self.explosio_sound.play().set_volume(0.1)
 
     def update(self):
         self.pos += self.direction * self.speed * dt
@@ -147,8 +147,7 @@ laser_group = pygame.sprite.Group()
 meteor_group = pygame.sprite.Group()
 score = Score()
 
-music = pygame.mixer.Sound('music.wav')
-music.play(loops = -1)
+music = pygame.mixer.Sound('music.wav').play(loops = -1).set_volume(0.01)
 
 # sprite creation
 ship = Ship(spaceship_group)
